@@ -11,6 +11,7 @@ class DatabaseSetup
         this.databaseConfig=databaseConfig;
         CreateComputerTable();
     }
+    
     public void CreateComputerTable()
     {
         var connection = new SqliteConnection(databaseConfig.ConnectionString);
