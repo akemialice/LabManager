@@ -4,7 +4,9 @@ using LabManager.Repositories;
 using LabManager.Models;
 
 var databaseConfig = new DatabaseConfig();
-new DatabaseSetup(databaseConfig);
+var databaseSetup = new DatabaseSetup(databaseConfig);
+var computerRepository = new ComputerRepository(databaseConfig);
+
 
 //Routing
 var modelName = args[0];
@@ -29,41 +31,39 @@ if(modelName == "Computer")
         int id = Convert.ToInt32(args[2]);
         var ram = args[3];
         var processor = args[4];
-
+        var connection = new SqliteConnection("Data Source=database.db");
         var computer = new Computer(id, ram, processor);
         computerRepository.Save(computer);
     }
 
     if(modelAction == "Show")
     {
-        Console.WriteLine("Computer Show");
+
         int id = Convert.ToInt32(args[2]);
     
-        foreach (var computer in computerRepository.GetAll())
+            if(computerRepository.existsById(id))
         {
-            if(computer.Id == id)
-            {
-            computerRepository.GetById(id);
+            var computer = computerRepository.GetById(id);
             Console.WriteLine("{0}, {1}, {2}", computer.Id, computer.Ram, computer.Processor);
-            }
+        } else {
+            Console.WriteLine($"O computador ${id} não existe");
         }
     }
 
      if(modelAction == "Update")
     {
-        Console.WriteLine("Computer Update");
-        int id = Convert.ToInt32(args[2]);
-        var ram = args[3];
-        var processor = args[4];
+        var id = Convert.ToInt32(args[2]);
+        string ram = args[3];
+        string processor = args[4];
 
         var computer = new Computer(id, ram, processor);
+
         computerRepository.Update(computer);
     }
 
      if(modelAction == "Delete")
     {
-        Console.WriteLine("Computer Delete");
-        int id = Convert.ToInt32(args[2]);
+        var id = Convert.ToInt32(args[2]);
         computerRepository.Delete(id);
     }
 }
