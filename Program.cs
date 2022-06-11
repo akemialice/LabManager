@@ -98,7 +98,6 @@ else if(modelName == "Lab")
 
         var connection = new SqliteConnection("Data Source=database.db");
         connection.Open();
-
         var command = connection.CreateCommand();
         command.CommandText = "INSERT INTO Labs VALUES($id, $number, $name, $block);";
         command.Parameters.AddWithValue("$id", id);
