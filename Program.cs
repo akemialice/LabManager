@@ -1,4 +1,4 @@
-﻿using Microsoft.Data.Sqlite;
+using Microsoft.Data.Sqlite;
 using LabManager.Database;
 using LabManager.Repositories;
 using LabManager.Models;
@@ -14,7 +14,6 @@ var modelAction = args[1];
 
 if(modelName == "Computer")
 {
-    var computerRepository = new ComputerRepository(databaseConfig);
 
     if(modelAction == "List")
     {
