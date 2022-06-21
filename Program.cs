@@ -1,4 +1,5 @@
 using Microsoft.Data.Sqlite;
+
 using LabManager.Database;
 using LabManager.Repositories;
 using LabManager.Models;
@@ -30,9 +31,10 @@ if(modelName == "Computer")
         int id = Convert.ToInt32(args[2]);
         var ram = args[3];
         var processor = args[4];
-        var connection = new SqliteConnection("Data Source=database.db");
+      
         var computer = new Computer(id, ram, processor);
         computerRepository.Save(computer);
+        Console.WriteLine("{0}, {1}, {2}", computer.Id, computer.Ram, computer.Processor);
     }
 
     if(modelAction == "Show")
@@ -51,19 +53,31 @@ if(modelName == "Computer")
 
      if(modelAction == "Update")
     {
-        var id = Convert.ToInt32(args[2]);
-        string ram = args[3];
-        string processor = args[4];
-
-        var computer = new Computer(id, ram, processor);
-
-        computerRepository.Update(computer);
+        int id = Convert.ToInt32(args[2]);
+      
+        if(computerRepository.ExistsById(id))
+        {
+            var ram = args[3];
+            var processor = args[4];
+            var computer = new Computer(id, ram, processor);
+            computerRepository.Update(computer); 
+        } else {
+            Console.WriteLine($"O computador {id} não existe!");
+        }   
     }
 
-     if(modelAction == "Delete")
+       if(modelAction == "Delete")
     {
-        var id = Convert.ToInt32(args[2]);
-        computerRepository.Delete(id);
+
+        int id = Convert.ToInt32(args[2]);
+
+        if(computerRepository.ExistsById(id))
+        {
+            computerRepository.Delete(id);
+            Console.WriteLine($"Computador {id} deletado.");
+        } else {
+             Console.WriteLine($"O computador {id} não existe ou não foi encontrado.");
+        }  
     }
 }
 
@@ -91,13 +105,14 @@ else if(modelName == "Lab")
 
     if(modelAction == "New")
     {
-        int id = Convert.ToInt32(args[2]);
+        var id = Convert.ToInt32(args[2]);
         var number = args[3];
         var name = args[4];
         var block = args[5];
 
         var connection = new SqliteConnection("Data Source=database.db");
         connection.Open();
+
         var command = connection.CreateCommand();
         command.CommandText = "INSERT INTO Labs VALUES($id, $number, $name, $block);";
         command.Parameters.AddWithValue("$id", id);
